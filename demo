@@ -1,0 +1,119 @@
+<html>
+    <head>
+
+    </head>
+
+    <body>
+        <form id="panda" >
+            <input type="submit" id="sign-in-button" value="submit">
+        </form>
+
+      
+        <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-app.js"></script>
+
+        <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-analytics.js"></script>
+
+        <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.14.2/firebase-firestore.js"></script>
+
+        <script>
+            // Your web app's Firebase configuration
+            var firebaseConfig = {
+                apiKey: "AIzaSyCDsJTg4dd9WHF9kXWdMGOvlGSjNuPpGRc",
+                authDomain: "test-tqt-1589182792210.firebaseapp.com",
+                databaseURL: "https://test-tqt-1589182792210.firebaseio.com",
+                projectId: "test-tqt-1589182792210",
+                storageBucket: "test-tqt-1589182792210.appspot.com",
+                messagingSenderId: "770508988525",
+                appId: "1:770508988525:web:a98eeb0869096d3427df64",
+                measurementId: "G-BNXKDSDE6Y"
+            };
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+        </script>
+
+        <script>
+            firebase.auth().languageCode = 'it';
+
+            window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('sign-in-button', {
+                'size': 'invisible',
+                'callback': function(response) {
+                    // reCAPTCHA solved, allow signInWithPhoneNumber.
+                    console.log("Response", response);
+                    onSignInSubmit(confirm);
+                }
+            });
+
+            window.recaptchaVerifier.render();
+
+            function onSignInSubmit(confirm){
+                var appVerifier = window.recaptchaVerifier;
+                firebase.auth().signInWithPhoneNumber("+84222222222", appVerifier)
+                    .then(function (confirmationResult) {
+                        // SMS sent. Prompt user to type the code from the message, then sign the
+                        // user in with confirmationResult.confirm(code).
+                        window.confirmationResult = confirmationResult;
+                        confirm();
+                    }).catch(function (error) {
+                    // Error; SMS not sent
+                    // ...
+                });
+            }
+
+            function confirm(){
+                window.confirmationResult.confirm("000000").then(function (result) {
+                    // User signed in successfully.
+                    var user = result.user;
+                    console.log("User", user);
+                    return firebase.auth().currentUser.getIdToken(true);
+                    // ...
+                }).then(function(token){
+                    console.log("Token firebase", token);
+                }).catch(function (error) {
+                    // User couldn't sign in (bad verification code?)
+                    // ...
+                });
+            }
+            onsubmit();
+            function onsubmit(){
+                let form = document.getElementById("panda");
+                form.addEventListener("submit", e => {
+                    e.preventDefault();
+                }, true);
+            }
+        </script>
+    </body>
+</html>
+
+
+<!-- 
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Document</title>
+ </head>
+ <body>
+     <button id="send-data">Send Data</button>
+ </body>
+ <script src='./js/playerChatter.js'></script>
+<script src="http://socket.xeviet.net.vn/socket.io/socket.io.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+ <script type="text/javascript">
+
+
+    $( document ).ready(function() {
+
+    	$('#send-data').click(function(){
+     			var socket = io("http://socket.xeviet.net.vn/");
+                socket.on('connect', () => {
+                    socket.emit('driver-send-location', 
+                        {"id":569,"headers":"Token eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOjQ2LCJwaG9uZSI6IjAyMjIyMjIyMjIiLCJleHAiOjE2MDY2NjI0NzIuMTQ2LCJpYXQiOjE2MDE0Nzg0NzJ9.L1stK2WY_rauts9fk-1MAzy0y0G3M6_hyE4aYFaxJmc"}
+                    );    	
+                });
+    	});
+});
+ </script>
+ </html> -->
